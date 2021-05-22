@@ -1,0 +1,17 @@
+# mac
+**/.DS_Store
+
+# idea
+.idea/
+
+# node
+node_modules/
+package-lock.json
+yarn.lock
+
+# vuepress
+
+# API Docs
+
+docs/api/
+
