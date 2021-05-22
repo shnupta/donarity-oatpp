@@ -1,3 +1,3 @@
-# website
+# Donarity
 
-[oatpp.io](https://oatpp.io/) public website
+A place to make giving, simpler.

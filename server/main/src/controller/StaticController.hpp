@@ -102,42 +102,6 @@ public:
 
   };
 
-  ENDPOINT_ASYNC("GET", "/docs/start/step_by_step", StepByStep) {
-    
-    ENDPOINT_ASYNC_INIT(StepByStep)
-    
-    Action act() override {
-      auto response = OutgoingResponse::createShared(oatpp::web::protocol::http::Status::CODE_301, nullptr);
-      response->putHeader("Location", oatpp::String("") + SitePath::CanonicalBase + "/docs/start/step-by-step/");
-      return _return(response);
-    }
-    
-  };
-  
-  ENDPOINT_ASYNC("GET", "/docs/simple_vs_async", SimpleVsAsync) {
-    
-    ENDPOINT_ASYNC_INIT(SimpleVsAsync)
-    
-    Action act() override {
-      auto response = OutgoingResponse::createShared(oatpp::web::protocol::http::Status::CODE_301, nullptr);
-      response->putHeader("Location", oatpp::String("") + SitePath::CanonicalBase + "/docs/simple-vs-async/");
-      return _return(response);
-    }
-    
-  };
-
-  ENDPOINT_ASYNC("GET", "/docs/integrations/swagger", IntegrationsSwagger) {
-
-    ENDPOINT_ASYNC_INIT(IntegrationsSwagger)
-
-    Action act() override {
-      auto response = OutgoingResponse::createShared(oatpp::web::protocol::http::Status::CODE_301, nullptr);
-      response->putHeader("Location", oatpp::String("") + SitePath::CanonicalBase + "/https://oatpp.io/docs/modules/oatpp-swagger/");
-      return _return(response);
-    }
-
-  };
-  
   ENDPOINT_ASYNC("GET", "*", Static) {
     
     ENDPOINT_ASYNC_INIT(Static)
@@ -180,7 +144,14 @@ public:
       auto buffer = controller->staticFileManager->getFile(info->path, true);
       OATPP_ASSERT_HTTP(buffer, Status::CODE_500, "Can't read file");
 
-      return _return(controller->createResponse(Status::CODE_200, buffer));
+      auto response = controller->createResponse(Status::CODE_200, buffer);
+      // TODO: Set mime type in the file info and write a translator which will set the content type
+      //   of the response automatically.
+      if (info->mimeType == "image/svg+xml") {
+        response->putHeader(Header::CONTENT_TYPE, "image/svg+xml");
+      }
+
+      return _return(response);
     }
     
   };

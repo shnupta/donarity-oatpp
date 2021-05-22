@@ -19,7 +19,7 @@ public:
   constexpr static const char* CanonicalBase = "https://localhost:8443";
   constexpr static bool doRedirect = true;
 #else
-  constexpr static const char* SiteHost = "oatpp.io";
+  constexpr static const char* SiteHost = "oatpp.io"; // TODO: Change these
   constexpr static const char* CanonicalBase = "https://oatpp.io";
   constexpr static bool doRedirect = true;
 #endif

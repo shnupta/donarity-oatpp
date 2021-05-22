@@ -51,7 +51,7 @@ link_directories(/usr/local/lib)
 target_include_directories(${project_name}-lib PUBLIC src)
 
 add_definitions(
-        -DFRONT_PATH="${CMAKE_CURRENT_LIST_DIR}/../../front"
+        -DFRONT_PATH="${CMAKE_CURRENT_LIST_DIR}/../../front/build"
 )
 
 if(RUN_PROD)

@@ -6,15 +6,15 @@
 
 #include <dirent.h>
 
-bool FilesIndex::isValidDirName(const oatpp::String& name){
+bool FilesIndex::isValidDirName(const oatpp::String &name) {
 
-  if(name->getSize() == 0){
+  if (name->getSize() == 0) {
     return false;
   }
 
-  for(v_int32 i = 0; i < name->getSize(); i++){
+  for (v_int32 i = 0; i < name->getSize(); i++) {
     v_char8 a = name->getData()[i];
-    if(a == '.' || a == ' '){
+    if (a == '.' || a == ' ') {
       return false;
     }
   }
@@ -23,19 +23,19 @@ bool FilesIndex::isValidDirName(const oatpp::String& name){
 
 }
 
-bool FilesIndex::isValidFileName(const oatpp::String& name){
+bool FilesIndex::isValidFileName(const oatpp::String &name) {
 
-  if(name->getSize() == 0){
+  if (name->getSize() == 0) {
     return false;
   }
 
-  if(name->getData()[0] == '.'){
+  if (name->getData()[0] == '.') {
     return false;
   }
 
-  for(v_int32 i = 0; i < name->getSize(); i++){
+  for (v_int32 i = 0; i < name->getSize(); i++) {
     v_char8 a = name->getData()[i];
-    if(a == ' ' || a == '/' || a == '\\' || a == '&' || a == '@'){
+    if (a == ' ' || a == '/' || a == '\\' || a == '&' || a == '@') {
       return false;
     }
   }
@@ -44,10 +44,10 @@ bool FilesIndex::isValidFileName(const oatpp::String& name){
 
 }
 
-void FilesIndex::scanDir(const oatpp::String& relPath, std::list<oatpp::String>& dirsFound) {
+void FilesIndex::scanDir(const oatpp::String &relPath, std::list<oatpp::String> &dirsFound) {
 
   oatpp::String fullDirPath;
-  if(relPath->getSize() > 0) {
+  if (relPath->getSize() > 0) {
     fullDirPath = m_baseDir + oatpp::String("/") + relPath;
   } else {
     fullDirPath = m_baseDir;
@@ -55,36 +55,39 @@ void FilesIndex::scanDir(const oatpp::String& relPath, std::list<oatpp::String>&
 
   DIR *d;
   struct dirent *dir;
-  d = opendir((const char*)fullDirPath->getData());
+  d = opendir((const char *) fullDirPath->getData());
 
-  if(d){
-    while ((dir = readdir(d)) != NULL){
-      if(dir->d_type == DT_DIR){
-        if(isValidDirName(dir->d_name)) {
+  if (d) {
+    while ((dir = readdir(d)) != NULL) {
+      if (dir->d_type == DT_DIR) {
+        if (isValidDirName(dir->d_name)) {
 
-          if(relPath->getSize() > 0) {
+          if (relPath->getSize() > 0) {
             dirsFound.push_back(relPath + oatpp::String("/") + dir->d_name);
           } else {
             dirsFound.push_back(dir->d_name);
           }
         }
 
-      }else if(dir->d_type == DT_REG){
-        if(isValidFileName(dir->d_name)) {
+      } else if (dir->d_type == DT_REG) {
+        if (isValidFileName(dir->d_name)) {
           auto info = std::make_shared<FileInfo>();
           info->path = fullDirPath + "/" + dir->d_name;
-          if(oatpp::base::StrBuffer::equals(dir->d_name, "index.html")) {
+          if (oatpp::base::StrBuffer::equals(dir->d_name, "index.html")) {
             info->key = relPath + "/";
-            if(relPath->getSize() > 0) {
+            if (relPath->getSize() > 0) {
               m_sitemap.addUrl(SitePath::CanonicalBase + oatpp::String("/") + info->key);
             } else {
               m_sitemap.addUrl(SitePath::CanonicalBase + info->key);
             }
           } else {
-            if(relPath->getSize() > 0) {
+            if (relPath->getSize() > 0) {
               info->key = relPath + "/" + dir->d_name;
             } else {
               info->key = dir->d_name;
+            }
+            if (info->key->std_str().find(".svg") != std::string::npos) {
+              info->mimeType = oatpp::String("image/svg+xml");
             }
           }
           m_files[info->key] = info;
@@ -116,14 +119,14 @@ void FilesIndex::buildIndex() {
 
     scanDirs = newDirs;
 
-  } while(!scanDirs.empty());
+  } while (!scanDirs.empty());
 
   OATPP_LOGD("\nFilesIndex", "%d files found", m_files.size());
 
   auto it = m_files.begin();
-  while(it != m_files.end()) {
+  while (it != m_files.end()) {
     OATPP_LOGD("FilesIndex", "file '%s' --> '%s'", it->first->c_str(), it->second->path->c_str());
-    it ++;
+    it++;
   }
 
   m_sitemap.build();

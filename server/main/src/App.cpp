@@ -46,7 +46,7 @@ void run() {
   std::thread thread2([&components] {
     oatpp::network::Server server(components.serverSecureConnectionProvider.getObject(),
                                   components.serverSecureConnectionHandler.getObject());
-    
+
     OATPP_LOGD("Server", "https-server on port %s...", components.serverSecureConnectionProvider.getObject()->getProperty("port").toString()->c_str());
     server.run();
   });
