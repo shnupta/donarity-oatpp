@@ -18,7 +18,7 @@ add_library(${project_name}-lib
         src/FilesIndex.hpp
         src/Sitemap.cpp
         src/Sitemap.hpp
-)
+        src/dto/EmployeeDto.hpp src/controller/EmployeeController.hpp)
 
 ## link libs
 set(ENV{LIBRESSL_ROOT_DIR} "/opt/homebrew/opt/libressl")
@@ -52,6 +52,7 @@ target_include_directories(${project_name}-lib PUBLIC src)
 
 add_definitions(
         -DFRONT_PATH="${CMAKE_CURRENT_LIST_DIR}/../../front/build"
+        -DAPI_BASE="/api"
 )
 
 if(RUN_PROD)

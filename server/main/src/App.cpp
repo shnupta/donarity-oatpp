@@ -7,6 +7,7 @@
 //
 
 #include "./controller/StaticController.hpp"
+#include "./controller/EmployeeController.hpp"
 #include "./AppComponent.hpp"
 
 #include "oatpp-libressl/Callbacks.hpp"
@@ -29,10 +30,15 @@ void run() {
   /* create ApiControllers and add endpoints to router */
   
   auto router = components.httpRouter.getObject();
-  
+
+  auto employeeController = EmployeeController::createShared();
+  employeeController->addEndpointsToRouter(router);
+
+  // N.B. static to come last as it has the * rule for routing to all static pages
   auto staticController = StaticController::createShared();
   staticController->addEndpointsToRouter(router);
-  
+
+
   /* create server */
   
   std::thread thread1([&components] {
