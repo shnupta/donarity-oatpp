@@ -18,7 +18,7 @@ add_library(${project_name}-lib
         src/FilesIndex.hpp
         src/Sitemap.cpp
         src/Sitemap.hpp
-        src/dto/EmployeeDto.hpp src/controller/EmployeeController.hpp)
+        src/dto/EmployeeDto.hpp src/controller/EmployeeController.hpp src/db/EmployeeDb.hpp src/DatabaseComponent.hpp src/dto/ConfigDto.hpp src/service/EmployeeService.cpp src/service/EmployeeService.hpp src/dto/PageDto.hpp)
 
 ## link libs
 set(ENV{LIBRESSL_ROOT_DIR} "/opt/homebrew/opt/libressl")
@@ -27,6 +27,7 @@ set(ENV{LIBRESSL_INCLUDE_DIR} "/opt/homebrew/opt/libressl/include")
 find_package(oatpp              1.2.5 REQUIRED)
 find_package(oatpp-libressl     1.2.5 REQUIRED)
 find_package(oatpp-zlib         1.2.5 REQUIRED)
+find_package(oatpp-postgresql   1.2.5 REQUIRED)
 find_package(ZLIB)
 
 include(FindPkgConfig) # <-- include pkg-config needed by FindLibreSSL.cmake script
@@ -39,6 +40,7 @@ target_link_libraries(${project_name}-lib
         PUBLIC oatpp::oatpp-test
         PUBLIC oatpp::oatpp-libressl
         PUBLIC oatpp::oatpp-zlib
+        PUBLIC oatpp::oatpp-postgresql
         PUBLIC ZLIB::ZLIB
 )
 
@@ -53,6 +55,8 @@ target_include_directories(${project_name}-lib PUBLIC src)
 add_definitions(
         -DFRONT_PATH="${CMAKE_CURRENT_LIST_DIR}/../../front/build"
         -DAPI_BASE="/api"
+        # Path to config file #
+        -DCONFIG_PATH="${CMAKE_CURRENT_LIST_DIR}/resources/config.json"
 )
 
 if(RUN_PROD)

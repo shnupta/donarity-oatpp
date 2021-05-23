@@ -13,11 +13,12 @@
 #include "oatpp-libressl/Callbacks.hpp"
 
 #include "oatpp/network/Server.hpp"
+#include "DatabaseComponent.hpp"
 
 #include <iostream>
 #include <csignal>
 
-void run() {
+void run(const oatpp::base::CommandLineArguments& args) {
   
   /* ignore SIGPIPE */
   std::signal(SIGPIPE, SIG_IGN);
@@ -25,7 +26,8 @@ void run() {
   /* set default callbacks for libressl */
   oatpp::libressl::Callbacks::setDefaultCallbacks();
   
-  AppComponent components; // Create scope Environment components
+  AppComponent components(args); // Create scope Environment components
+  DatabaseComponent dbComponent;
   
   /* create ApiControllers and add endpoints to router */
   
@@ -70,7 +72,7 @@ int main(int argc, const char * argv[]) {
   oatpp::base::DefaultLogger::Config loggerConfig("%Y-%m-%d %H:%M:%S", false, 0xFFFFFFFF);
   oatpp::base::Environment::init(std::make_shared<oatpp::base::DefaultLogger>(loggerConfig));
 
-  run();
+  run(oatpp::base::CommandLineArguments(argc, argv));
   
   /* Print how much objects were created during app running, and what have left-probably leaked */
   /* Disable object counting for release builds using '-D OATPP_DISABLE_ENV_OBJECT_COUNTERS' flag for better performance */

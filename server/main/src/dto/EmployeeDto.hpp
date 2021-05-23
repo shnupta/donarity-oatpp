@@ -13,9 +13,9 @@
 class EmployeeDto : public oatpp::DTO {
   DTO_INIT(EmployeeDto, DTO);
 
-  DTO_FIELD(String, firstName);
-  DTO_FIELD(String, lastName);
-  DTO_FIELD(String, description);
+  DTO_FIELD(String, firstName, "firstname");
+  DTO_FIELD(String, lastName, "lastname");
+  DTO_FIELD(String, description, "description");
 };
 
 #include OATPP_CODEGEN_END(DTO)

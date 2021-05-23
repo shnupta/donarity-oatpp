@@ -5,6 +5,7 @@
 #ifndef DONARITY_EMPLOYEECONTROLLER_HPP
 #define DONARITY_EMPLOYEECONTROLLER_HPP
 
+#include <service/EmployeeService.hpp>
 #include "oatpp/web/server/api/ApiController.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
@@ -16,6 +17,7 @@
 class EmployeeController : public oatpp::web::server::api::ApiController {
 private:
   typedef EmployeeController __ControllerType;
+  EmployeeService m_employeeService;
 
 public:
   EmployeeController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper)) : oatpp::web::server::api::ApiController(objectMapper) {}
@@ -26,16 +28,26 @@ public:
   }
 
 public:
+  ENDPOINT_INFO(Employees) {
+    info->summary = "Get one employee";
+
+    info->addResponse<Object<EmployeeDto>>(Status::CODE_200, "application/json");
+//    info->addResponse<Object<StatusDto>>(Status::CODE_404, "application/json");
+//    info->addResponse<Object<StatusDto>>(Status::CODE_500, "application/json");
+
+//    info->pathParams["userId"].description = "User Identifier";
+  }
   ENDPOINT_ASYNC("GET", API_BASE "/employees", Employees) {
   ENDPOINT_ASYNC_INIT(Employees)
 
   Action act() override {
+
     auto dto = EmployeeDto::createShared();
     dto->firstName = "Casey";
     dto->lastName = "Williams";
     dto->description = "Imperial Student";
 
-    return _return(controller->createDtoResponse(Status::CODE_200, dto));
+    return _return(controller->createDtoResponse(Status::CODE_200, controller->m_employeeService.getEmployee()));
   }
 
   };

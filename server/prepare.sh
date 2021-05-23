@@ -49,6 +49,19 @@ cd ../../
 
 #####################################################
 
+git clone https://github.com/oatpp/oatpp-postgresql
+
+cd oatpp-postgresql
+
+mkdir build ** cd build
+
+cmake ..
+make install
+
+cd ../../
+
+#####################################################
+
 cd donarity/server/main
 
 mkdir build && cd build
